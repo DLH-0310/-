@@ -6,21 +6,22 @@
               <img src="../../assets/img/logo_index.png" alt="">
           </div>
           <!-- 表单 -->
-          <el-form style="margin-top:20px" :model="loginFrom" :rules='loginRules'>
-            <el-form-item prop="phone">
-                <el-input v-model="loginFrom.phone" placeholder="请输入手机号"></el-input>
+          <el-form ref='formObj' style="margin-top:20px" :model="loginForm" :rules='loginRules'>
+            <el-form-item prop="mobile">
+                <el-input v-model="loginForm.mobile" placeholder="请输入手机号"></el-input>
             </el-form-item>
+            <!-- 验证码 -->
             <el-form-item prop="code">
-              <el-input v-model="loginFrom.code" style="width:200px"  placeholder="请输入内容"></el-input>
+              <el-input v-model="loginForm.code" style="width:200px"  placeholder="请输入内容"></el-input>
               <el-button style="float:right">发送验证码</el-button>
             </el-form-item>
           <!-- 选框 -->
            <el-form-item prop="check">
-                <el-checkbox v-model="loginFrom.check">我已阅读并同意你列举的霸王条款</el-checkbox>
+                <el-checkbox v-model="loginForm.check">我已阅读并同意你列举的霸王条款</el-checkbox>
            </el-form-item>
           <!--登录-->
            <el-form-item>
-                <el-button type="primary" style="width:300px; margin-left:30px">登录</el-button>
+                <el-button type="primary" style="width:300px; margin-left:30px" @click='logIn'>登录</el-button>
            </el-form-item>
           </el-form>
       </el-card>
@@ -32,15 +33,15 @@ export default {
   data () {
     return {
       // 需要校验的表单数据
-      loginFrom: {
-        phone: '', // 手机号
+      loginForm: {
+        mobile: '', // 手机号
         code: '', // 验证码
         check: false // 是否勾选
       },
       // 校验规则
       loginRules: {
       // key 校验的字段名：
-        phone: [
+        mobile: [
           { required: true, message: '请输入手机号' },
           { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号' }
         ],
@@ -62,6 +63,22 @@ export default {
           }
         ]
       }
+    }
+  },
+  methods: {
+    logIn () {
+      this.$refs.formObj.validate((isOk) => {
+        if (isOk) {
+          // 为true 直接调用接口
+          this.$axios({
+            url: '/authorizations',
+            data: this.loginForm,
+            method: 'post'
+          }).then(res => {
+            console.log(res.data)
+          })
+        }
+      })
     }
   }
 }
