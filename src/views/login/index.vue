@@ -75,7 +75,16 @@ export default {
             data: this.loginForm,
             method: 'post'
           }).then(res => {
-            console.log(res.data)
+            // console.log(res.data)
+            // 保存本地token
+            window.localStorage.setItem('user-token', res.data.data.token)
+            // 跳转到主页
+            this.$router.push('./home')
+          }).catch(() => {
+            this.$message({
+              message: '警告哦，这是一条警告消息',
+              type: 'error'
+            })
           })
         }
       })
